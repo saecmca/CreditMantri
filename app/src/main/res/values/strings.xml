@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Creditmantri</string>
+    <string-array name="city">
+       <item>Chennai</item>
+        <item>Mumbai</item>
+        <item>Bangalore</item>
+        <item>New Delhi</item>
+    </string-array>
+</resources>
