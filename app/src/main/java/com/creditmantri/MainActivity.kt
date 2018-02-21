@@ -21,15 +21,16 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
     private var spnCity: Spinner? = null
     private var rclWhether: RecyclerView? = null
-    private var strCity = ""
-    private var unit=""
+    private var strCity=""
+    private var unit =""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
+
         spnCity!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
 
                 strCity = parent.getItemAtPosition(position).toString()
                 callwebservice()
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val getWhether = response.body()
 
-                    val whetherAdapter = WhetherAdapter(this@MainActivity, getWhether!!.getList())
+                    val whetherAdapter = WhetherAdapter(this@MainActivity, getWhether!!.getList(),unit)
                     rclWhether!!.adapter = whetherAdapter
 
                 } catch (e: Exception) {

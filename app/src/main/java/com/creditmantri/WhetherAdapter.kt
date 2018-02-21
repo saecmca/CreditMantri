@@ -12,8 +12,6 @@ import com.creditmantri.apiResponse.WhetherModel
 import java.text.SimpleDateFormat
 
 
-
-
 /**
  * Created by Mani on 20-02-2018.
  */
@@ -21,10 +19,12 @@ class WhetherAdapter() : RecyclerView.Adapter<WhetherAdapter.ViewHolder>() {
     lateinit var favList: List<WhetherModel>
     lateinit var inflater: LayoutInflater
     lateinit var context: Context
+    lateinit var unit: String
 
-    constructor(mcontext: Context, favList: ArrayList<WhetherModel>) : this() {
+    constructor(mcontext: Context, favList: ArrayList<WhetherModel>, unit: String) : this() {
         this.context = mcontext
         this.favList = favList
+        this.unit = unit
 
     }
 
@@ -36,28 +36,33 @@ class WhetherAdapter() : RecyclerView.Adapter<WhetherAdapter.ViewHolder>() {
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var forecast =favList.get(position)
+        var forecast = favList.get(position)
         var spf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val newDate = spf.parse(forecast.dt_txt)
-        spf = SimpleDateFormat("EEE dd MMM")
+        spf = SimpleDateFormat("EEE dd MMM \nHH:mm")
         val newDateString = spf.format(newDate)
-              holder.tvFavName!!.setText(newDateString)
-              holder.tvCel1!!.setText(forecast.main.temp_max)
-              holder.tvCel2!!.setText(forecast.main.temp_min)
-              holder.tvClouds!!.setText(forecast.weather.get(0).description)
-              holder.tvmill!!.setText(forecast.wind.speed.toString())
-              holder.tvcloud!!.setText("Clouds: "+forecast.clouds.all.toString()+" %,  "+forecast.main.pressure+" hpa")
+        var strTemp: String
+        if (unit.contains("Metric"))
+            strTemp = "C"
+        else if (unit.contains("Imperial"))
+            strTemp = "F"
+        else strTemp = "K"
+        holder.tvFavName!!.setText(newDateString)
+        holder.tvCel1!!.setText(forecast.main.temp_max+strTemp)
+        holder.tvCel2!!.setText(forecast.main.temp_min+strTemp)
+        holder.tvClouds!!.setText(forecast.weather.get(0).description)
+        holder.tvmill!!.setText(forecast.wind.speed.toString() + " m/s")
+        holder.tvcloud!!.setText("Clouds: " + forecast.clouds.all.toString() + " %,  " + forecast.main.pressure + " hpa")
 
-              holder.share!!.setOnClickListener(object : View.OnClickListener{
-                  override fun onClick(v: View?) {
-                      val sendIntent = Intent()
-                      sendIntent.action = Intent.ACTION_SEND
-                      sendIntent.putExtra(Intent.EXTRA_TEXT, forecast.weather.get(0).description)
-                      sendIntent.type = "text/plain"
-                      context.startActivity(Intent.createChooser(sendIntent, "send_to"))
-                  }
-              })
-
+        holder.share!!.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(Intent.EXTRA_TEXT, forecast.weather.get(0).description)
+                sendIntent.type = "text/plain"
+                context.startActivity(Intent.createChooser(sendIntent, "send_to"))
+            }
+        })
 
 
     }
